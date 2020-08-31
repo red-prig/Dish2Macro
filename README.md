@@ -1,3 +1,10 @@
+
+This macro modifed by Red_prig for use with any game or progam.
+
+Just put Title of need game in Titlename.txt
+
+
+
 A macro for Dishonored 2 (and since then also Dishonored: Death of the Outsider and Dishonored 1),
 that allows you to bunnyhop without a freescroll mouse.
 

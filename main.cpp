@@ -55,13 +55,18 @@ namespace {
 
 
         int len;
+        int i;
         len = wcslen(Titlename) + 1;
+        i = GetWindowTextLengthW(Window) + 1;
+        if (len < i)   len = i;
+        if (len < 256) len = 256;
 
         str = (wchar_t*)std::malloc(len * sizeof(uint16_t));
 
         GetClassNameW(Window, str, len);
         //std::wcout << str << '\n';
         if (wcscmp(trim(str), Titlename) != 0) {
+
             GetWindowTextW(Window, str, len);
 
             //std::fputws(Titlename, stdout);
@@ -131,48 +136,51 @@ namespace {
         DWORD KeyCode = 0;
         bool IsDown = false;
         switch (WParam) {
-        case WM_LBUTTONDOWN: {
-            IsDown = true;
-
-            [[fallthrough]];
-        }
-        case WM_LBUTTONUP: {
-            KeyCode = VK_LBUTTON;
-            break;
-        }
-        case WM_RBUTTONDOWN: {
-            IsDown = true;
-
-            [[fallthrough]];
-        }
-        case WM_RBUTTONUP: {
-            KeyCode = VK_RBUTTON;
-            break;
-        }
-        case WM_MBUTTONDOWN: {
-            IsDown = true;
-
-            [[fallthrough]];
-        }
-        case WM_MBUTTONUP: {
-            KeyCode = VK_MBUTTON;
-            break;
-        }
-        case WM_XBUTTONDOWN: {
-            IsDown = true;
-
-            [[fallthrough]];
-        }
-        case WM_XBUTTONUP: {
-            auto& Info = *reinterpret_cast<MSLLHOOKSTRUCT*>(LParam);
-            KeyCode = VK_XBUTTON1 + HIWORD(Info.mouseData) - XBUTTON1;
-
-            break;
-        }
+         case WM_LBUTTONDOWN: {
+             IsDown = true;
+         
+             [[fallthrough]];
+         }
+         case WM_LBUTTONUP: {
+             KeyCode = VK_LBUTTON;
+             break;
+         }
+         case WM_RBUTTONDOWN: {
+             IsDown = true;
+         
+             [[fallthrough]];
+         }
+         case WM_RBUTTONUP: {
+             KeyCode = VK_RBUTTON;
+             break;
+         }
+         case WM_MBUTTONDOWN: {
+             IsDown = true;
+         
+             [[fallthrough]];
+         }
+         case WM_MBUTTONUP: {
+             KeyCode = VK_MBUTTON;
+             break;
+         }
+         case WM_XBUTTONDOWN: {
+             IsDown = true;
+         
+             [[fallthrough]];
+         }
+         case WM_XBUTTONUP: {
+             auto& Info = *reinterpret_cast<MSLLHOOKSTRUCT*>(LParam);
+             KeyCode = VK_XBUTTON1 + HIWORD(Info.mouseData) - XBUTTON1;
+         
+             break;
+         }
+         case WM_MOUSEMOVE: {
+             return CallNextHookEx(MouseHook, Code, WParam, LParam);
+         }
         }
 
         if (HandleKey(KeyCode, IsDown)) {
-            return 1;
+            return 1; 
         }
 
         return CallNextHookEx(MouseHook, Code, WParam, LParam);
